@@ -1,0 +1,14 @@
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.AssemblyInfoInputs.cache
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.AssemblyInfo.cs
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.csproj.CoreCompileInputs.cache
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\bin\Debug\net8.0\POO_Colecciones.exe
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\bin\Debug\net8.0\POO_Colecciones.deps.json
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\bin\Debug\net8.0\POO_Colecciones.runtimeconfig.json
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\bin\Debug\net8.0\POO_Colecciones.dll
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\bin\Debug\net8.0\POO_Colecciones.pdb
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.dll
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\refint\POO_Colecciones.dll
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.pdb
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.genruntimeconfig.cache
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\ref\POO_Colecciones.dll
