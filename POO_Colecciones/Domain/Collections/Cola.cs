@@ -1,5 +1,6 @@
 using POO_Colecciones.Domain.Entities;
 using POO_Colecciones.Domain.Interfaces;
+using POO_Colecciones.Domain.Iterators;
 
 namespace POO_Colecciones.Domain.Collections
 {
@@ -7,7 +8,7 @@ namespace POO_Colecciones.Domain.Collections
     /// Colección FIFO (First In, First Out) que implementa IColeccionable.
     /// Internamente usa Queue&lt;IComp&gt; de .NET.
     /// </summary>
-    public class Cola : Coleccionable
+    public class Cola : Coleccionable, Iterable
     {
         // ─── Estructura interna ─────────────────────────────────────────────
         private readonly Queue<IComp> _cola = new();
@@ -67,5 +68,13 @@ namespace POO_Colecciones.Domain.Collections
         }
 
         public override string ToString() => $"Cola [{Cuantos()} elemento(s)]";
+
+        // ─── IIterable ──────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Retorna un iterador que recorre la cola de frente a fondo (orden FIFO).
+        /// La iteración opera sobre una instantánea, no sobre la estructura viva.
+        /// </summary>
+        public Iterator CrearIterador() => new ColaIterator(_cola);
     }
 }

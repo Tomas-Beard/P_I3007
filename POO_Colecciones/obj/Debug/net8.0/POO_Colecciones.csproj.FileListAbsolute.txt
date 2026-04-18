@@ -12,3 +12,4 @@ C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\refint\POO_Coleccio
 C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.pdb
 C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.genruntimeconfig.cache
 C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\ref\POO_Colecciones.dll
+C:\Users\HP\Desktop\P_I3007\POO_Colecciones\obj\Debug\net8.0\POO_Colecciones.sourcelink.json

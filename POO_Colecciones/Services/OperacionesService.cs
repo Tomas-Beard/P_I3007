@@ -1,6 +1,7 @@
 using POO_Colecciones.Domain.Collections;
 using POO_Colecciones.Domain.Entities;
 using POO_Colecciones.Domain.Interfaces;
+using POO_Colecciones.Domain.Strategies;
 using POO_Colecciones.Utils;
 
 namespace POO_Colecciones.Services
@@ -58,13 +59,34 @@ namespace POO_Colecciones.Services
             }
         }
 
-        /// <summary>Crea un Alumno con datos generados aleatoriamente.</summary>
+        /// <summary>Crea un Alumno con datos generados aleatoriamente.
+        /// Ej 2: se asigna ComparacionPorNombre como estrategia por defecto.
+        /// </summary>
         private static Alumno CrearAlumnoAleatorio(int dni)
         {
             string nombre   = RandomHelper.Elegir(Nombres);
             int    legajo   = RandomHelper.EnteroEntre(1000, 9999);
             double promedio = RandomHelper.DoubleEntre(0, 10);
-            return new Alumno(nombre, dni, legajo, promedio);
+            var alumno = new Alumno(nombre, dni, legajo, promedio);
+            alumno.SetEstrategia(new ComparacionPorNombre()); // estrategia por defecto (Ej 2)
+            return alumno;
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  LLENAR genérico (Ej 7) — cualquier Coleccionable (Pila, Cola, Conjunto)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Sobrecarga genérica: agrega <see cref="CantidadRelleno"/> alumnos
+        /// aleatorios a cualquier Coleccionable que implemente Agregar().
+        /// Util para llenar Pila, Cola o Conjunto independientemente.
+        /// </summary>
+        public void LlenarAlumnos(Coleccionable col)
+        {
+            ArgumentNullException.ThrowIfNull(col);
+            int dniBase = RandomHelper.EnteroEntre(10_000_000, 20_000_000);
+            for (int i = 0; i < CantidadRelleno; i++)
+                col.Agregar(CrearAlumnoAleatorio(dniBase + i));
         }
 
         // ════════════════════════════════════════════════════════════════════
@@ -193,6 +215,83 @@ namespace POO_Colecciones.Services
             if (col.Cuantos() == 0) return false;
             try   { return col.Maximo() is Alumno; }
             catch { return false; }
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  IMPRIMIR ELEMENTOS con Iterator (Ej 6)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Recorre el iterable usando su propio Iterator e imprime cada elemento
+        /// invocando ToString(). No conoce el tipo concreto de la colección.
+        /// </summary>
+        public void ImprimirElementos(Iterable iterable)
+        {
+            ArgumentNullException.ThrowIfNull(iterable);
+            Iterator it = iterable.CrearIterador();
+            int indice = 1;
+            it.Primero();
+            while (!it.Fin())
+            {
+                Console.WriteLine($"  [{indice++,2}] {it.Actual()}");
+                it.Siguiente();
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  CAMBIAR ESTRATEGIA con Iterator (Ej 8)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Recorre la colección usando iterator, castea cada elemento a Alumno
+        /// (con seguridad) y le aplica la nueva estrategia de comparación.
+        /// La colección debe implementar Iterable además de Coleccionable.
+        /// </summary>
+        public void CambiarEstrategia(Coleccionable col, EstrategiaComparacion estrategia)
+        {
+            ArgumentNullException.ThrowIfNull(col);
+            ArgumentNullException.ThrowIfNull(estrategia);
+
+            if (col is not Iterable iterable)
+                throw new ArgumentException(
+                    $"{col.GetType().Name} no implementa Iterable. " +
+                    "Solo Pila, Cola y Conjunto soportan CambiarEstrategia.");
+
+            Iterator it = iterable.CrearIterador();
+            it.Primero();
+            while (!it.Fin())
+            {
+                IComp elem = it.Actual();
+                if (elem is Alumno alumno)
+                    alumno.SetEstrategia(estrategia);
+                it.Siguiente();
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  MOSTRAR MIN/MAX sin entrada interactiva (Ej 9)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Muestra mínimo y máximo de la colección según la estrategia activa,
+        /// sin pedir entrada por consola. Ideal para demostrar el cambio de criterio.
+        /// </summary>
+        public void MostrarMinMax(Coleccionable col, string tituloEstrategia)
+        {
+            ArgumentNullException.ThrowIfNull(col);
+            Console.WriteLine(new string('─', 60));
+            Console.WriteLine($"  Estrategia  : {tituloEstrategia}");
+            Console.WriteLine($"  Colección   : {col}");
+            try
+            {
+                Console.WriteLine($"  Mínimo      : {col.Minimo()}");
+                Console.WriteLine($"  Máximo      : {col.Maximo()}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"  [!] {ex.Message}");
+            }
+            Console.WriteLine();
         }
     }
 }

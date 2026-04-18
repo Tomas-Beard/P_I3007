@@ -1,5 +1,6 @@
 using POO_Colecciones.Domain.Entities;
 using POO_Colecciones.Domain.Interfaces;
+using POO_Colecciones.Domain.Iterators;
 
 namespace POO_Colecciones.Domain.Collections
 {
@@ -7,7 +8,7 @@ namespace POO_Colecciones.Domain.Collections
     /// Colección LIFO (Last In, First Out) que implementa IColeccionable.
     /// Internamente usa Stack&lt;IComp&gt; de .NET.
     /// </summary>
-    public class Pila : Coleccionable
+    public class Pila : Coleccionable, Iterable
     {
         // ─── Estructura interna ─────────────────────────────────────────────
         private readonly Stack<IComp> _pila = new();
@@ -67,5 +68,13 @@ namespace POO_Colecciones.Domain.Collections
         }
 
         public override string ToString() => $"Pila [{Cuantos()} elemento(s)]";
+
+        // ─── IIterable ──────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Retorna un iterador que recorre la pila de cima a base (orden LIFO).
+        /// La iteración opera sobre una instantánea, no sobre la estructura viva.
+        /// </summary>
+        public Iterator CrearIterador() => new PilaIterator(_pila);
     }
 }
