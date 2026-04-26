@@ -293,5 +293,90 @@ namespace POO_Colecciones.Services
             }
             Console.WriteLine();
         }
+        // ════════════════════════════════════════════════════════════════════
+        //  LLENAR unificado con Factory Method (Ej 6)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Ej 6 — Versión unificada de llenar.
+        /// Agrega <see cref="CantidadRelleno"/> objetos creados por
+        /// <see cref="FabricaDeComparables.CrearAleatorio"/> según la opción.
+        /// Reemplaza la duplicación entre Llenar(Numero) y LlenarAlumnos.
+        /// </summary>
+        /// <param name="opcion">1=Numero | 2=Alumno | 3=Profesor</param>
+        public void Llenar(Coleccionable col, int opcion)
+        {
+            ArgumentNullException.ThrowIfNull(col);
+            for (int i = 0; i < CantidadRelleno; i++)
+                col.Agregar(FabricaDeComparables.CrearAleatorio(opcion));
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  INFORMAR tipado con Factory Method (Ej 6)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Ej 6 — Versión tipada de informar.
+        /// Muestra cantidad, mínimo y máximo. Luego crea un objeto por teclado
+        /// (usando <see cref="FabricaDeComparables.CrearPorTeclado"/>) y busca
+        /// si la colección lo contiene.
+        /// </summary>
+        /// <param name="opcion">1=Numero | 2=Alumno | 3=Profesor</param>
+        public void Informar(Coleccionable col, int opcion)
+        {
+            ArgumentNullException.ThrowIfNull(col);
+
+            Console.WriteLine(new string('═', 60));
+            Console.WriteLine($"  Colección : {col}");
+            Console.WriteLine(new string('─', 60));
+            Console.WriteLine($"  Cantidad  : {col.Cuantos()}");
+
+            try
+            {
+                Console.WriteLine($"  Mínimo    : {col.Minimo()}");
+                Console.WriteLine($"  Máximo    : {col.Maximo()}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"  [!] {ex.Message}");
+            }
+
+            // Búsqueda usando Factory Method por teclado
+            try
+            {
+                Console.WriteLine();
+                Console.WriteLine("  Ingrese un objeto para buscar en la colección:");
+                IComp buscado = FabricaDeComparables.CrearPorTeclado(opcion);
+                bool encontrado = col.Contiene(buscado);
+                Console.WriteLine($"  Contiene {buscado}: {(encontrado ? "SÍ ✓" : "NO ✗")}");
+            }
+            catch (Exception ex) when (ex is InvalidOperationException or IOException)
+            {
+                Console.WriteLine($"  [!] Consola no interactiva. ({ex.GetType().Name})");
+            }
+
+            Console.WriteLine(new string('═', 60));
+            Console.WriteLine();
+        }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  DICTADO DE CLASES — Observer en acción (Ej 13)
+        // ════════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Ej 13 — Simula una clase dictada por el profesor.
+        /// Repite 5 veces: hablarALaClase() + escribirEnElPizarron().
+        /// Cada acción notifica a todos los alumnos observadores.
+        /// </summary>
+        public void DictadoDeClases(Profesor profesor)
+        {
+            ArgumentNullException.ThrowIfNull(profesor);
+            for (int ronda = 1; ronda <= 5; ronda++)
+            {
+                Console.WriteLine($"  ── Ronda {ronda} ──────────────────────────────────────────");
+                profesor.HablarALaClase();
+                profesor.EscribirEnElPizarron();
+            }
+        }
     }
 }
