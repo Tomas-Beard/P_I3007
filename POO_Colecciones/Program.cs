@@ -2,6 +2,10 @@ using POO_Colecciones.Domain.Collections;
 using POO_Colecciones.Domain.Entities;
 using POO_Colecciones.Domain.Strategies;
 using POO_Colecciones.Services;
+// P4 ─ Adapter y Decorator
+using MetodologíasDeProgramaciónI;
+using POO_Colecciones.Domain.Adapter;
+using POO_Colecciones.Domain.Decorator;
 
 // ════════════════════════════════════════════════════════════════════════════
 //  PROGRAMA PRINCIPAL
@@ -168,8 +172,100 @@ Console.WriteLine();
 servicio.DictadoDeClases(profesor);
 
 Console.WriteLine();
+Console.WriteLine("Presione cualquier tecla para continuar a la Práctica 4...");
+Console.ReadKey();
+
+// ════════════════════════════════════════════════════════════════════════════
+//  PRÁCTICA 4 — Adapter + Decorator (Ejercicios 1–8)
+// ════════════════════════════════════════════════════════════════════════════
+Console.WriteLine();
 Console.WriteLine("╔══════════════════════════════════════════════════════════╗");
-Console.WriteLine("║              Fin de las prácticas 1, 2 y 3               ║");
+Console.WriteLine("║    PRÁCTICA 4 — Adapter + Decorator                      ║");
+Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
+Console.WriteLine();
+
+// ─── Datos para crear los 20 Students adaptados ──────────────────────────────
+// Nombres con apellido para que el formato "Nombre Apellido  nota" quede legible.
+(string nombre, int dni, int legajo, double promedio)[] datosAlumno =
+{
+    ("Juan García",        12345678, 1001, 7.5),
+    ("María López",        23456789, 2002, 6.0),
+    ("Carlos Rodríguez",   34567890, 3003, 8.2),
+    ("Ana Martínez",       45678901, 4004, 5.5),
+    ("Pedro Sánchez",      56789012, 5005, 9.0),
+    ("Lucía Fernández",    67890123, 6006, 4.8),
+    ("Diego Pérez",        78901234, 7007, 3.2),
+    ("Valentina Torres",   89012345, 8008, 7.0),
+    ("Mateo Ramírez",      90123456, 9009, 6.7),
+    ("Sofía González",     11223344, 1234, 8.9),
+};
+
+(string nombre, int dni, int legajo, double promedio)[] datosMuyEstudioso =
+{
+    ("Ratón Pérez",        19283746, 5671, 9.5),
+    ("Rosa Blanco",        28374659, 6782, 8.0),
+    ("Felipe Castro",      37465827, 7893, 7.3),
+    ("Carmen Ruiz",        46572938, 8904, 6.1),
+    ("Jorge Morales",      55647382, 9015, 9.8),
+    ("Isabel Díaz",        64738291, 1126, 7.7),
+    ("Luis Vargas",        73829104, 2237, 8.4),
+    ("Patricia Romero",    82910473, 3348, 5.9),
+    ("Andrés Jiménez",     91047382, 4459, 6.5),
+    ("Teresa Molina",      10293847, 5560, 7.1),
+};
+
+// ─── Instanciar Teacher (del sistema MDPI — sin modificar) ───────────────────
+Teacher teacher = new Teacher();
+
+Console.WriteLine("── Creando 10 Alumno adaptados con cadena de decoradores ──");
+foreach (var (nombre, dni, legajo, promedio) in datosAlumno)
+{
+    Alumno a = new Alumno(nombre, dni, legajo, promedio);
+    a.SetEstrategia(new ComparacionPorNombre());
+
+    // ── Encadenamiento dinámico de decoradores (OBLIGATORIO, según enunciado) ──
+    IMostrarCalificacion decorador =
+        new DecoradorAsteriscos(
+            new DecoradorCondicion(
+                new DecoradorNotaEnLetras(
+                    new DecoradorLegajo(
+                        new MostrarCalificacionSimple(a),
+                    a),
+                a),
+            a));
+
+    teacher.goToClass(new AlumnoAdapter(a, decorador));
+}
+
+Console.WriteLine("── Creando 10 AlumnoMuyEstudioso adaptados ─────────────────");
+foreach (var (nombre, dni, legajo, promedio) in datosMuyEstudioso)
+{
+    AlumnoMuyEstudioso ame = new AlumnoMuyEstudioso(nombre, dni, legajo, promedio);
+    ame.SetEstrategia(new ComparacionPorNombre());
+
+    IMostrarCalificacion decorador =
+        new DecoradorAsteriscos(
+            new DecoradorCondicion(
+                new DecoradorNotaEnLetras(
+                    new DecoradorLegajo(
+                        new MostrarCalificacionSimple(ame),
+                    ame),
+                ame),
+            ame));
+
+    teacher.goToClass(new AlumnoAdapter(ame, decorador));
+}
+
+Console.WriteLine();
+Console.WriteLine("── Teacher.teachingAClass() ─────────────────────────────────");
+Console.WriteLine();
+
+// ─── El Teacher toma lista, examina y publica resultados con decoradores ──────
+teacher.teachingAClass();
+
+Console.WriteLine();
+Console.WriteLine("╔══════════════════════════════════════════════════════════╗");
+Console.WriteLine("║          Fin de las prácticas 1, 2, 3 y 4               ║");
 Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
 Console.WriteLine("Presione cualquier tecla para salir...");
 Console.ReadKey();

@@ -9,13 +9,17 @@ namespace POO_Colecciones.Domain.Entities
     /// IEstrategiaComparacion intercambiable en tiempo de ejecución.
     /// Si no se asigna estrategia, se usa el criterio original (Legajo + Promedio).
     /// Ej 11: PrestarAtencion() y Distraerse() añadidos.
-    /// Ej 12: implementa IObservador 
-    ///        consulta el estado del Profesor en Actualizar().
+    /// Ej 12: implementa IObservador, consulta el estado del Profesor en Actualizar().
+    /// P4:    agrega calificacion, ResponderPregunta (virtual) y MostrarCalificacion.
+    /// </summary>
     public class Alumno : Persona, IObservador
     {
         // ─── Atributos propios ──────────────────────────────────────────────
-        private readonly int _legajo;
+        private readonly int    _legajo;
         private readonly double _promedio;
+
+        // ─── P4: calificación asignada por el Teacher ──────────────────────
+        private int _calificacion;
 
         // ─── Patrón Strategy ────────────────────────────────────────────────
         /// <summary>
@@ -38,8 +42,12 @@ namespace POO_Colecciones.Domain.Entities
         }
 
         // ─── Getters ────────────────────────────────────────────────────────
-        public int GetLegajo() => _legajo;
-        public double GetPromedio() => _promedio;
+        public int    GetLegajo()      => _legajo;
+        public double GetPromedio()    => _promedio;
+        public int    GetCalificacion() => _calificacion;
+
+        // ─── P4: setter de calificación (invocado por AlumnoAdapter.setScore) ─
+        public void SetCalificacion(int calificacion) => _calificacion = calificacion;
 
         // ─── Patrón Strategy: asignación de estrategia ──────────────────────
         /// <summary>
@@ -114,6 +122,25 @@ namespace POO_Colecciones.Domain.Entities
             else if (profesor.GetEstado() == "escribiendo")
                 Distraerse();
         }
+
+        // ═══════════════════════════════════════════════════════════════════
+        //  P4 — Responder pregunta y mostrar calificación
+        // ═══════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// P4 — Devuelve un número aleatorio entre 1 y 3.
+        /// Virtual: AlumnoMuyEstudioso devuelve pregunta % 3.
+        /// </summary>
+        public virtual int ResponderPregunta(int pregunta) =>
+            RandomHelper.EnteroEntre(1, 3);
+
+        /// <summary>
+        /// P4 — Devuelve el nombre y la calificación separados por dos espacios.
+        /// Formato: "Nombre Apellido  nota"  (doble espacio como separador).
+        /// Usado como punto de partida por los decoradores.
+        /// </summary>
+        public string MostrarCalificacion() =>
+            $"{GetNombre()}  {_calificacion}";
 
         // ─── Representación textual ─────────────────────────────────────────
         public override string ToString() =>
