@@ -1,4 +1,5 @@
 using POO_Colecciones.Domain.Collections;
+using POO_Colecciones.Domain.Entities;
 using POO_Colecciones.Domain.Strategies;
 using POO_Colecciones.Services;
 
@@ -105,5 +106,71 @@ servicio.MostrarMinMax(pilaEj9, "por Promedio");
 servicio.CambiarEstrategia(pilaEj9, new ComparacionPorDni());
 servicio.MostrarMinMax(pilaEj9, "por DNI");
 
+Console.WriteLine("Presione cualquier tecla para continuar a la Práctica 3...");
+Console.ReadKey();
+
+// ════════════════════════════════════════════════════════════════════════════
+//  PRÁCTICA 3 — Factory Method + Observer (Ejercicios 2–14)
+// ════════════════════════════════════════════════════════════════════════════
+Console.WriteLine();
+Console.WriteLine("╔══════════════════════════════════════════════════════════╗");
+Console.WriteLine("║    PRÁCTICA 3 — Factory Method + Observer                ║");
+Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
+Console.WriteLine();
+
+// ─── Ej 6: llenar unificado con Factory Method ───────────────────────────────
+Console.WriteLine("══ Ej 6: Llenar con Factory Method (opción 1 = Numero) ════");
+Pila pilaNumeros = new();
+servicio.Llenar(pilaNumeros, 1);       // usa FabricaDeComparables.CrearAleatorio(1)
+Console.WriteLine($"  Pila llenada con Números: {pilaNumeros.Cuantos()} elementos");
+Console.WriteLine($"  Mínimo: {pilaNumeros.Minimo()}");
+Console.WriteLine($"  Máximo: {pilaNumeros.Maximo()}");
+Console.WriteLine();
+
+Console.WriteLine("══ Ej 6: Llenar con Factory Method (opción 2 = Alumno) ════");
+Cola colaAlumnos = new();
+servicio.Llenar(colaAlumnos, 2);       // usa FabricaDeComparables.CrearAleatorio(2)
+Console.WriteLine($"  Cola llenada con Alumnos: {colaAlumnos.Cuantos()} elementos");
+Console.WriteLine($"  Mínimo: {colaAlumnos.Minimo()}");
+Console.WriteLine($"  Máximo: {colaAlumnos.Maximo()}");
+Console.WriteLine();
+
+Console.WriteLine("══ Ej 6: Llenar con Factory Method (opción 3 = Profesor) ══");
+Conjunto conjProfesores = new();
+servicio.Llenar(conjProfesores, 3);    // usa FabricaDeComparables.CrearAleatorio(3)
+Console.WriteLine($"  Conjunto llenado con Profesores: {conjProfesores.Cuantos()} elementos únicos");
+Console.WriteLine($"  Mínimo (por antigüedad): {conjProfesores.Minimo()}");
+Console.WriteLine($"  Máximo (por antigüedad): {conjProfesores.Maximo()}");
+Console.WriteLine();
+
+// ─── Ej 14: Observer — Profesor + 20 Alumnos ─────────────────────────────────
+Console.WriteLine("══ Ej 14: Observer — DictadoDeClases ══════════════════════");
+Console.WriteLine();
+
+// Crear un Profesor vía Factory Method (opción 3)
+Profesor profesor = (Profesor)FabricaDeComparables.CrearAleatorio(3);
+Console.WriteLine($"  Profesor creado: {profesor}");
+Console.WriteLine();
+
+// Crear 20 Alumnos y registrarlos como observadores del profesor
+Console.WriteLine("  Registrando 20 alumnos como observadores...");
+for (int i = 0; i < 20; i++)
+{
+    Alumno alumnoObs = (Alumno)FabricaDeComparables.CrearAleatorio(2);
+    profesor.AgregarObservador(alumnoObs);
+}
+Console.WriteLine("  ✓ 20 alumnos registrados.");
+Console.WriteLine();
+
+// Ejecutar el dictado de clases (Ej 13): 5 rondas de hablar + escribir
+Console.WriteLine("  ► Iniciando dictado de clases (5 rondas):");
+Console.WriteLine();
+servicio.DictadoDeClases(profesor);
+
+Console.WriteLine();
+Console.WriteLine("╔══════════════════════════════════════════════════════════╗");
+Console.WriteLine("║              Fin de las prácticas 1, 2 y 3               ║");
+Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
 Console.WriteLine("Presione cualquier tecla para salir...");
 Console.ReadKey();
+

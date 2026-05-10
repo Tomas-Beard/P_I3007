@@ -1,4 +1,5 @@
 using POO_Colecciones.Domain.Interfaces;
+using POO_Colecciones.Utils;
 
 namespace POO_Colecciones.Domain.Entities
 {
@@ -7,11 +8,13 @@ namespace POO_Colecciones.Domain.Entities
     /// para la comparación: la lógica de comparación se delega a un objeto
     /// IEstrategiaComparacion intercambiable en tiempo de ejecución.
     /// Si no se asigna estrategia, se usa el criterio original (Legajo + Promedio).
-    /// </summary>
-    public class Alumno : Persona
+    /// Ej 11: PrestarAtencion() y Distraerse() añadidos.
+    /// Ej 12: implementa IObservador 
+    ///        consulta el estado del Profesor en Actualizar().
+    public class Alumno : Persona, IObservador
     {
         // ─── Atributos propios ──────────────────────────────────────────────
-        private readonly int    _legajo;
+        private readonly int _legajo;
         private readonly double _promedio;
 
         // ─── Patrón Strategy ────────────────────────────────────────────────
@@ -30,12 +33,12 @@ namespace POO_Colecciones.Domain.Entities
             if (promedio < 0 || promedio > 10)
                 throw new ArgumentException("El promedio debe estar entre 0 y 10.");
 
-            _legajo   = legajo;
+            _legajo = legajo;
             _promedio = promedio;
         }
 
         // ─── Getters ────────────────────────────────────────────────────────
-        public int    GetLegajo()   => _legajo;
+        public int GetLegajo() => _legajo;
         public double GetPromedio() => _promedio;
 
         // ─── Patrón Strategy: asignación de estrategia ──────────────────────
@@ -68,6 +71,48 @@ namespace POO_Colecciones.Domain.Entities
             // ── Fallback (criterio original de Práctica 1): Legajo + Promedio ──
             int cmpLegajo = _legajo.CompareTo(otro._legajo);
             return cmpLegajo != 0 ? cmpLegajo : _promedio.CompareTo(otro._promedio);
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        //  Comportamiento en clase (Ej 11)
+        // ═══════════════════════════════════════════════════════════════════
+
+        /// <summary>Ej 11 — El alumno presta atención a la clase.</summary>
+        public void PrestarAtencion() =>
+            Console.WriteLine($"    [{GetNombre()}] Prestando atención.");
+
+        /// <summary>
+        /// Ej 11 — El alumno se distrae realizando una actividad al azar.
+        /// Usa RandomHelper.Elegir() para elegir entre las 3 opciones.
+        /// </summary>
+        public void Distraerse()
+        {
+            string actividad = RandomHelper.Elegir(
+                "Mirando el celular",
+                "Dibujando en el margen de la carpeta",
+                "Tirando aviones de papel");
+            Console.WriteLine($"    [{GetNombre()}] {actividad}.");
+        }
+
+        // ═══════════════════════════════════════════════════════════════════
+        //  Patrón Observer — IObservador (Ej 12)
+        // ═══════════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// Patrón Observer (modelo de cátedra) — IObservador.
+        /// Recibe el IObservado que disparó la notificación,
+        /// lo castea a Profesor y consulta su estado con GetEstado().
+        /// NO se envía información directa: el observador TIRA del estado.
+        /// </summary>
+        public void Actualizar(IObservado observado)
+        {
+            if (observado is not Profesor profesor)
+                return; // solo reacciona a profesores
+
+            if (profesor.GetEstado() == "hablando")
+                PrestarAtencion();
+            else if (profesor.GetEstado() == "escribiendo")
+                Distraerse();
         }
 
         // ─── Representación textual ─────────────────────────────────────────
