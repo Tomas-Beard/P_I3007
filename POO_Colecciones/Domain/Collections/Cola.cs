@@ -1,3 +1,4 @@
+using POO_Colecciones.Domain.Command;
 using POO_Colecciones.Domain.Entities;
 using POO_Colecciones.Domain.Interfaces;
 using POO_Colecciones.Domain.Iterators;
@@ -5,17 +6,23 @@ using POO_Colecciones.Domain.Iterators;
 namespace POO_Colecciones.Domain.Collections
 {
     /// <summary>
-    /// Colección FIFO (First In, First Out) que implementa IColeccionable.
+    /// Colección FIFO (First In, First Out) que implementa IColeccionable e Iterable.
     /// Internamente usa Queue&lt;IComp&gt; de .NET.
+    ///
+    /// P5 — Implementa Ordenable: permite inyectar comandos Command que se
+    /// disparan en momentos clave sin que Cola conozca la lógica concreta del Aula.
     /// </summary>
     public class Cola : Coleccionable, Iterable, Ordenable
     {
         // ─── Estructura interna ─────────────────────────────────────────────
         private readonly Queue<IComp> _cola = new();
+
+        // ─── P5: Comandos inyectados (Patrón Command) ────────────────────────
         private OrdenEnAula1? _ordenInicio;
         private OrdenEnAula2? _ordenLlegaAlumno;
         private OrdenEnAula1? _ordenAulaLlena;
 
+        // ─── P5: Implementación de Ordenable ────────────────────────────────
         public void setOrdenInicio(OrdenEnAula1 orden) => _ordenInicio = orden;
         public void setOrdenLlegaAlumno(OrdenEnAula2 orden) => _ordenLlegaAlumno = orden;
         public void setOrdenAulaLlena(OrdenEnAula1 orden) => _ordenAulaLlena = orden;
@@ -24,16 +31,28 @@ namespace POO_Colecciones.Domain.Collections
 
         public int Cuantos() => _cola.Count;
 
+        /// <summary>
+        /// Agrega un elemento a la cola y dispara los comandos correspondientes:
+        ///  - 1er elemento   → OrdenInicio + OrdenLlegaAlumno(obj)
+        ///  - Cualquier otro → OrdenLlegaAlumno(obj)
+        ///  - Al llegar a 40 → OrdenAulaLlena()
+        /// </summary>
         public void Agregar(IComp obj)
         {
             ArgumentNullException.ThrowIfNull(obj);
-            _cola.Enqueue(obj);
 
-            if (_cola.Count == 1)
+            // ── ¿Es el primer elemento? → disparar inicio ──────────────────
+            bool esPrimero = _cola.Count == 0;
+            if (esPrimero)
                 _ordenInicio?.ejecutar();
 
+            // ── Insertar en la cola ────────────────────────────────────────
+            _cola.Enqueue(obj);
+
+            // ── Notificar llegada del alumno ───────────────────────────────
             _ordenLlegaAlumno?.ejecutar(obj);
 
+            // ── ¿Se llegó a 40 elementos? → disparar aula llena ───────────
             if (_cola.Count == 40)
                 _ordenAulaLlena?.ejecutar();
         }
