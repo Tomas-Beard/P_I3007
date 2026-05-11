@@ -8,10 +8,17 @@ namespace POO_Colecciones.Domain.Collections
     /// Colección FIFO (First In, First Out) que implementa IColeccionable.
     /// Internamente usa Queue&lt;IComp&gt; de .NET.
     /// </summary>
-    public class Cola : Coleccionable, Iterable
+    public class Cola : Coleccionable, Iterable, Ordenable
     {
         // ─── Estructura interna ─────────────────────────────────────────────
         private readonly Queue<IComp> _cola = new();
+        private OrdenEnAula1? _ordenInicio;
+        private OrdenEnAula2? _ordenLlegaAlumno;
+        private OrdenEnAula1? _ordenAulaLlena;
+
+        public void setOrdenInicio(OrdenEnAula1 orden) => _ordenInicio = orden;
+        public void setOrdenLlegaAlumno(OrdenEnAula2 orden) => _ordenLlegaAlumno = orden;
+        public void setOrdenAulaLlena(OrdenEnAula1 orden) => _ordenAulaLlena = orden;
 
         // ─── IColeccionable ─────────────────────────────────────────────────
 
@@ -21,6 +28,14 @@ namespace POO_Colecciones.Domain.Collections
         {
             ArgumentNullException.ThrowIfNull(obj);
             _cola.Enqueue(obj);
+
+            if (_cola.Count == 1)
+                _ordenInicio?.ejecutar();
+
+            _ordenLlegaAlumno?.ejecutar(obj);
+
+            if (_cola.Count == 40)
+                _ordenAulaLlena?.ejecutar();
         }
 
         /// <summary>Retorna el mínimo recorriendo todos los elementos.</summary>

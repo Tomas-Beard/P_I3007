@@ -8,10 +8,17 @@ namespace POO_Colecciones.Domain.Collections
     /// Colección LIFO (Last In, First Out) que implementa IColeccionable.
     /// Internamente usa Stack&lt;IComp&gt; de .NET.
     /// </summary>
-    public class Pila : Coleccionable, Iterable
+    public class Pila : Coleccionable, Iterable, Ordenable
     {
         // ─── Estructura interna ─────────────────────────────────────────────
         private readonly Stack<IComp> _pila = new();
+        private OrdenEnAula1? _ordenInicio;
+        private OrdenEnAula2? _ordenLlegaAlumno;
+        private OrdenEnAula1? _ordenAulaLlena;
+
+        public void setOrdenInicio(OrdenEnAula1 orden) => _ordenInicio = orden;
+        public void setOrdenLlegaAlumno(OrdenEnAula2 orden) => _ordenLlegaAlumno = orden;
+        public void setOrdenAulaLlena(OrdenEnAula1 orden) => _ordenAulaLlena = orden;
 
         // ─── IColeccionable ─────────────────────────────────────────────────
 
@@ -21,6 +28,14 @@ namespace POO_Colecciones.Domain.Collections
         {
             ArgumentNullException.ThrowIfNull(obj);
             _pila.Push(obj);
+
+            if (_pila.Count == 1)
+                _ordenInicio?.ejecutar();
+
+            _ordenLlegaAlumno?.ejecutar(obj);
+
+            if (_pila.Count == 40)
+                _ordenAulaLlena?.ejecutar();
         }
 
         /// <summary>Retorna el mínimo recorriendo todos los elementos.</summary>

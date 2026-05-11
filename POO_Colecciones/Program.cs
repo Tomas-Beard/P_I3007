@@ -6,6 +6,9 @@ using POO_Colecciones.Services;
 using MetodologíasDeProgramaciónI;
 using POO_Colecciones.Domain.Adapter;
 using POO_Colecciones.Domain.Decorator;
+using POO_Colecciones.Domain.Proxy;
+using POO_Colecciones.Domain.Command;
+using POO_Colecciones.Domain.Interfaces;
 
 // ════════════════════════════════════════════════════════════════════════════
 //  PROGRAMA PRINCIPAL
@@ -220,7 +223,7 @@ Teacher teacher = new Teacher();
 Console.WriteLine("── Creando 10 Alumno adaptados con cadena de decoradores ──");
 foreach (var (nombre, dni, legajo, promedio) in datosAlumno)
 {
-    Alumno a = new Alumno(nombre, dni, legajo, promedio);
+    AlumnoProxy a = new AlumnoProxy(nombre, dni, legajo, promedio, false);
     a.SetEstrategia(new ComparacionPorNombre());
 
     // ── Encadenamiento dinámico de decoradores (OBLIGATORIO, según enunciado) ──
@@ -240,7 +243,7 @@ foreach (var (nombre, dni, legajo, promedio) in datosAlumno)
 Console.WriteLine("── Creando 10 AlumnoMuyEstudioso adaptados ─────────────────");
 foreach (var (nombre, dni, legajo, promedio) in datosMuyEstudioso)
 {
-    AlumnoMuyEstudioso ame = new AlumnoMuyEstudioso(nombre, dni, legajo, promedio);
+    AlumnoProxy ame = new AlumnoProxy(nombre, dni, legajo, promedio, true);
     ame.SetEstrategia(new ComparacionPorNombre());
 
     IMostrarCalificacion decorador =
@@ -264,9 +267,41 @@ Console.WriteLine();
 teacher.teachingAClass();
 
 Console.WriteLine();
+Console.WriteLine("Presione cualquier tecla para continuar a la PARTE FINAL (Proxy + Command)...");
+Console.ReadKey();
+
+// ════════════════════════════════════════════════════════════════════════════
+//  PARTE 8 — MAIN FINAL (Proxy + Command)
+// ════════════════════════════════════════════════════════════════════════════
+Console.WriteLine();
 Console.WriteLine("╔══════════════════════════════════════════════════════════╗");
-Console.WriteLine("║          Fin de las prácticas 1, 2, 3 y 4               ║");
+Console.WriteLine("║    PARTE FINAL — Proxy + Command + Aula                  ║");
+Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
+Console.WriteLine();
+
+// 1. Crear Aula
+Aula aula = new Aula();
+
+// 2. Crear Pila
+Pila pilaComandos = new Pila();
+
+// 3. Configurar órdenes
+pilaComandos.setOrdenInicio(new OrdenInicio(aula));
+pilaComandos.setOrdenLlegaAlumno(new OrdenLlegaAlumno(aula));
+pilaComandos.setOrdenAulaLlena(new OrdenAulaLlena(aula));
+
+// 4. Llenar Pila (20 Alumno + 20 AlumnoMuyEstudioso)
+Console.WriteLine("► Agregando 20 alumnos regulares...");
+servicio.Llenar(pilaComandos, 2); // Opción 2: Alumno
+
+Console.WriteLine("► Agregando 20 alumnos muy estudiosos...");
+servicio.Llenar(pilaComandos, 4); // Opción 4: Alumno Muy Estudioso
+
+Console.WriteLine();
+Console.WriteLine("╔══════════════════════════════════════════════════════════╗");
+Console.WriteLine("║          Fin del Programa                               ║");
 Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
 Console.WriteLine("Presione cualquier tecla para salir...");
 Console.ReadKey();
+
 

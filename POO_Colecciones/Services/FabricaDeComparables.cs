@@ -25,10 +25,11 @@ namespace POO_Colecciones.Services
             if (opcion == 1) fabrica = new FabricaDeNumeros();
             if (opcion == 2) fabrica = new FabricaDeAlumnos();
             if (opcion == 3) fabrica = new FabricaDeProfesores();
+            if (opcion == 4) fabrica = new FabricaDeAlumnosMuyEstudiosos();
 
             if (fabrica is null)
                 throw new ArgumentOutOfRangeException(nameof(opcion),
-                    $"Opción {opcion} no válida. Use 1 (Numero), 2 (Alumno) o 3 (Profesor).");
+                    $"Opción {opcion} no válida. Use 1 (Numero), 2 (Alumno), 3 (Profesor) o 4 (AlumnoMuyEstudioso).");
 
             return fabrica.CrearAleatorio();   // ← delega al método abstracto
         }
@@ -60,10 +61,11 @@ namespace POO_Colecciones.Services
             if (opcion == 1) fabrica = new FabricaDeNumeros();
             if (opcion == 2) fabrica = new FabricaDeAlumnos();
             if (opcion == 3) fabrica = new FabricaDeProfesores();
+            if (opcion == 4) fabrica = new FabricaDeAlumnosMuyEstudiosos();
 
             if (fabrica is null)
                 throw new ArgumentOutOfRangeException(nameof(opcion),
-                    $"Opción {opcion} no válida. Use 1 (Numero), 2 (Alumno) o 3 (Profesor).");
+                    $"Opción {opcion} no válida. Use 1 (Numero), 2 (Alumno), 3 (Profesor) o 4 (AlumnoMuyEstudioso).");
 
             return fabrica.CrearPorTeclado();  // ← delega al método abstracto
         }
@@ -85,6 +87,7 @@ namespace POO_Colecciones.Services
             Console.WriteLine("    1 → Numero");
             Console.WriteLine("    2 → Alumno");
             Console.WriteLine("    3 → Profesor");
+            Console.WriteLine("    4 → Alumno Muy Estudioso");
         }
     }
 }
